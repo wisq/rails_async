@@ -1,0 +1,22 @@
+#!/bin/sh
+
+NUM="$1"
+echo "Setting up tree: `/bin/pwd`"
+
+set -e -x
+git fetch origin
+git checkout ci
+git reset --hard origin/ci
+git clean -f
+
+cp -f ../../base/db/schema.rb ./db/schema.rb
+cp -f "$RAILS_ASYNC_LIB/tasks/rails_async.rake" ./lib/tasks/.
+
+if [ -f "../../test.patch" ]; then
+	sed "s/#NUM#/$NUM/g" ../../test.patch | patch -p1
+else
+	echo "No test.patch found, you must create one." 1>&2
+	exit 1
+fi
+
+rake db:test:clone

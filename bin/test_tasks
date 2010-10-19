@@ -1,0 +1,6 @@
+#!/bin/sh
+
+grep test:units base/lib/tasks/shopify_tests.rake \
+	| cut -d'(' -f2 \
+	| cut -d')' -f1 \
+	| sed 's/:/_/g'

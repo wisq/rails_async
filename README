@@ -1,0 +1,5 @@
+This project is designed to run the various components of
+a Rails test suite in parallel (using GNU Make).
+
+It is currently being used internally at Shopify, but
+will be documented for public use when I have time.
