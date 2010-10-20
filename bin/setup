@@ -12,10 +12,11 @@ git clean -f
 cp -f ../../base/db/schema.rb ./db/schema.rb
 cp -f "$RAILS_ASYNC_LIB/tasks/rails_async.rake" ./lib/tasks/.
 
-if [ -f "../../test.patch" ]; then
-	sed "s/#NUM#/$NUM/g" ../../test.patch | patch -p1
+PATCH="../../rails_async.patch"
+if [ -f "$PATCH" ]; then
+	sed "s/#NUM#/$NUM/g" "$PATCH" | patch -p1
 else
-	echo "No test.patch found, you must create one." 1>&2
+	echo "No $PATCH found, you must create one." 1>&2
 	exit 1
 fi
 
