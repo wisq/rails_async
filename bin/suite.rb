@@ -27,7 +27,7 @@ class Suite
       run_command("Setup for #{tree}",  tree, [BIN_PATH + 'setup', tree.basename])
       FileUtils.touch(setup_flag)
     end
-    run_command("Rake task #{@task}", tree, ['rake', '--trace', 'rails_async:no_db_clone', @task])
+    run_command("Rake task #{@task}", tree, ['rake', 'rails_async:no_db_clone', @task])
   end
   
   private
