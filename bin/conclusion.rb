@@ -7,8 +7,8 @@ class Conclusion
   
   def run
     @names.each do |name|
-      output_log(name, 'out', $stdout)
-      output_log(name, 'err', $stderr)
+      output_log(name, 'out', $stdout, 'output')
+      output_log(name, 'err', $stderr, 'errors')
     end
 
     failed = @names.select { |name| File.exist?("run/#{name}.fail") }
@@ -24,9 +24,12 @@ class Conclusion
   
   private
   
-  def output_log(name, type, fh)
+  def output_log(name, type, fh, what)
     file = "log/#{name}.#{type}"
-    fh.puts(File.read(file)) if File.exist?(file)
+    if File.exist?(file)
+      fh.puts('', "=== #{what.capitalize} for #{name_to_task(name)} ===", '')
+      fh.puts(File.read(file))
+    end
   end
   
   def name_to_task(name)
