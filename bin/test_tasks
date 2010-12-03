@@ -3,7 +3,8 @@
 CHUNKS = {
   'test:units' => 2,
   'test:functionals' => 2,
-  'test:api' => 2
+  'test:api' => 2,
+  'test:api:json' => 2,
 }
 
 contents = File.read('base/lib/tasks/shopify_tests.rake')

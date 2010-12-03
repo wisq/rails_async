@@ -41,6 +41,12 @@ class TestChunk
   end
 end
 
+SPECIAL_CHUNKS = {
+  'api_json' => lambda do |t|
+    t.pattern = 'test/api/**/*_test.rb'
+    t.ruby_opts << ['-rubygems',  '-rtest/invoke_json_tests']
+  end
+}
 
 namespace :rails_async do
   task :no_db_clone do
@@ -57,12 +63,17 @@ namespace :rails_async do
     num   = ENV['CHUNK_NUMBER'].to_i
     total = ENV['CHUNK_TOTAL'].to_i
 
-    files = TestChunk.files_for_chunk(num, total, "test/#{suite.singularize}/**/*_test.rb")
-    name = "rails_async:test_#{suite}_#{num}_of_#{total}"
+    name = "test_#{suite}_#{num}_of_#{total}"
 
     Rake::TestTask.new(name) do |t|
+      special = SPECIAL_CHUNKS[suite]
+      special.call(t) if special
+
+      pattern = t.pattern || "test/#{suite.singularize}/**/*_test.rb"
+      t.test_files = TestChunk.files_for_chunk(num, total, pattern)
+      t.pattern = nil
+
       t.libs << 'test'
-      t.test_files = files
       t.verbose = true
     end
 
