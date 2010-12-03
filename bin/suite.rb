@@ -15,7 +15,17 @@ class Suite
   
   def initialize(name)
     @name = name
-    @task = name.gsub('_', ':')
+
+    if name =~ /^test_(.+)_(\d+)_of_(\d+)$/
+      @task = [
+        'rails_async:test_chunk',
+        "CHUNK_SUITE=#{$1}",
+        "CHUNK_NUMBER=#{$2}",
+        "CHUNK_TOTAL=#{$3}"
+      ]
+    else
+      @task = name.gsub('_', ':')
+    end
   end
   
   def run
@@ -27,7 +37,7 @@ class Suite
       run_command("Setup for #{tree}",  tree, [BIN_PATH + 'setup', tree.basename])
       FileUtils.touch(setup_flag)
     end
-    run_command("Rake task #{@task}", tree, ['rake', 'rails_async:no_db_clone', @task])
+    run_command("Rake task #{@task}", tree, ['rake', 'rails_async:no_db_clone', @task].flatten)
   end
   
   private

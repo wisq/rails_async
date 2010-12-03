@@ -16,7 +16,7 @@ class Conclusion
     if failed.empty?
       exit(0)
     else
-      tasks = failed.map { |name| name_to_task(name) }
+      tasks = failed.map { |name| name_to_task(name, true) }.uniq
       $stderr.puts "Errors running #{to_sentence(tasks)}!"
       exit(1)
     end
@@ -32,8 +32,8 @@ class Conclusion
     end
   end
   
-  def name_to_task(name)
-    name.gsub('_', ':')
+  def name_to_task(name, short = false)
+    name.gsub('_', ':').sub(/:(\d+):of:(\d+)$/, short ? '' : ' (part \\1 of \\2)')
   end
   
   def to_sentence(list)

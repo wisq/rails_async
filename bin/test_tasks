@@ -1,6 +1,26 @@
-#!/bin/sh
+#!/usr/bin/ruby
 
-grep test:units base/lib/tasks/shopify_tests.rake \
-	| cut -d'(' -f2 \
-	| cut -d')' -f1 \
-	| sed 's/:/_/g'
+CHUNKS = {
+  'test:units' => 2,
+  'test:functionals' => 2,
+  'test:api' => 2
+}
+
+contents = File.read('base/lib/tasks/shopify_tests.rake')
+if contents !~ /%w\( (   [^()]* test:units [^()]+   ) \)/x
+  raise 'Cannot determine tests to run'
+end
+
+old_tasks = $1.split(/\s+/)
+new_tasks = old_tasks.map do |task|
+  new_task = task.gsub(':', '_')
+  chunks = CHUNKS[task]
+
+  if chunks
+    (1..chunks).map {|n| "#{new_task}_#{n}_of_#{chunks}" }
+  else
+    new_task
+  end
+end
+
+puts new_tasks.join(' ')
