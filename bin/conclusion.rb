@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+require 'fileutils'
+
 class Conclusion  
   def initialize(names)
     @names = names
@@ -17,7 +19,14 @@ class Conclusion
       exit(0)
     else
       tasks = failed.map { |name| name_to_task(name, true) }.uniq
+      $stderr.puts
       $stderr.puts "Errors running #{to_sentence(tasks)}!"
+
+      if tasks == ['test:remote']
+        $stderr.puts "Only remote tests failed; soft failure."
+        FileUtils.touch('run/soft_fail')
+      end
+      
       exit(1)
     end
   end

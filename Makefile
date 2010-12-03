@@ -6,7 +6,7 @@ all: $(TESTS)
 
 setup:
 	mkdir -vp log run
-	rm -f log/*.out log/*.err run/*.fail run/*.setup
+	rm -f log/*.out log/*.err run/*.fail run/*.setup run/soft_fail
 
 $(TESTS): setup
 	$(BIN)/suite.rb "$@" || touch "run/$@.fail"
